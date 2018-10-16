@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Chat</string>
+    <string name="ip_address">IP Address</string>
+    <string name="connect">Connect</string>
+    <string name="type_message">type message</string>
+    <string name="send">Send</string>
+</resources>
