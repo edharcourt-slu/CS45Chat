@@ -1,5 +1,6 @@
 package edu.stlawu.chat;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText ip_address;
     private ConnectionManager connectionManager;
 
+    private Handler uiHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,14 +33,41 @@ public class MainActivity extends AppCompatActivity {
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO
+                Thread client_thread =
+                        new Thread(connectionManager.client);
+
+                // TODO lots of error checking on the
+                // ip_address
+                connectionManager.setIp_addr(
+                        ip_address.getText().toString()
+                );
+
+                client_thread.start();
             }
         });
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO
+                // Do we have a connection manager?
+                // Assume we do.
+                // TODO fix later if no connection
+
+                runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity
+                                .this
+                                .connectionManager.getTo().println(
+                                MainActivity
+                                    .this
+                                    .send_text.getText().toString()
+                                );
+                            }
+                    }
+            );
+
             }
         });
     }
@@ -46,12 +76,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        connectionManager = new ConnectionManager();
+        connectionManager =
+            new ConnectionManager(this);
 
         // Create the server thread
         Thread server_thread = new Thread(connectionManager.server);
         server_thread.start();
 
+    }
+
+    public void appendChat(final String s) {
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                chat_log.append(s);
+            }
+        });
     }
 
 
