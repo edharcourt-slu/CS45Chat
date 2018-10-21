@@ -1,12 +1,15 @@
 package edu.stlawu.chat;
 
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +31,15 @@ public class MainActivity extends AppCompatActivity {
         send_text = findViewById(R.id.send_text);
         chat_log = findViewById(R.id.chat_log);
         ip_address = findViewById(R.id.ip_address);
+
+        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        int ip = wm.getConnectionInfo().getIpAddress();
+        String ips = String.format("%d.%d.%d.%d", (ip & 0xff),
+                (ip >> 8 & 0xff),
+                (ip >> 16 & 0xff),
+                (ip >> 24 & 0xff));
+        Toast.makeText(this, ips, Toast.LENGTH_LONG ).show();
+
 
         // set up click listeners
         connect.setOnClickListener(new View.OnClickListener() {
